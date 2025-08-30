@@ -1,20 +1,26 @@
 import express from "express";
+import postsRouter from "./api/posts.routes";
+
+import authorRoutes from "./api/authors.routes";
+import tagRouter from "./api/tags.routes";
+import dotenv from "dotenv";
 import connectDB from "./database";
-import postsRouter from "./api/posts.routers";
-import notFound from "./middlewares/NotFound";
-import errorHandler from "./middlewares/ErrorHandler";
+import errorHandler from "./middlewares/errorHandler";
+import notFound from "./middlewares/notFound";
 
 const app = express();
-const PORT = 8000;
-
 app.use(express.json());
-
-app.use("/posts", postsRouter);
-
-app.use(notFound);
-app.use(errorHandler);
-
+dotenv.config();
 connectDB();
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+const PORT = process.env.PORT || 8000;
+
+app.use("/api/authors", authorRoutes);
+app.use("/posts", postsRouter);
+app.use("/tags", tagRouter);
+// app.use(notFound);
+// app.use(errorHandler);
+app.use(errorHandler);
+app.use(notFound);
+app.listen(8000, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
